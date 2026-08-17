@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ST Arts N Crafts - Professional Invoice / Memo</title>
+    
+    <style>
+        :root {
+            --primary: #FF0066;
+            --primary-dark: #cc0052;
+            --primary-light: #fff0f5;
+            --secondary: #2c3e50;
+            --danger: #dc3545;
+            --danger-hover: #bd2130;
+            --bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Top Bar for Manage Button */
+        .top-action-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .btn-manage {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-manage:hover {
+            background-color: #1a252f;
+        }
+
+        /* Header Styling */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo {
+            width: 85px;
+            height: 85px;
+            object-fit: contain;
+        }
+
+        .title-area h1 {
+            color: var(--primary);
+            font-size: 28px;
+            letter-spacing: -0.5px;
+            font-weight: 800;
+        }
+
+        .title-area p {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h2 {
+            color: var(--primary);
+            font-size: 26px;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .invoice-number-display {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Input Form Layout */
+        .form-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 700;
+            font-size: 11.5px;
+            margin-bottom: 6px;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="password"],
+        select,
+        textarea {
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+            color: #111827;
+            background-color: #fff;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 0, 106, 0.12);
+        }
+
+        .print-date-text {
+            display: none;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Add Item Box Layout */
+        .add-items-wrapper {
+            margin-bottom: 25px;
+            background-color: var(--primary-light);
+            padding: 20px;
+            border: 1.5px dashed #ffb3d1;
+            border-radius: 8px;
+        }
+
+        .add-items-wrapper h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+        }
+
+        .single-add-box {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .single-add-box select { flex: 2; min-width: 200px; }
+        .single-add-box input[type="text"] { flex: 2; min-width: 200px; }
+        .single-add-box input[type="number"] { flex: 1; min-width: 90px; }
+
+        .btn-add-item {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: background 0.2s ease;
+            box-shadow: 0 2px 6px rgba(255, 0, 106, 0.25);
+        }
+
+        .btn-add-item:hover { background-color: var(--primary-dark); }
+
+        /* Table Styling */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        .items-table th, .items-table td {
+            border: 1px solid #d1d5db;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .items-table th {
+            background-color: #f3f4f6;
+            color: var(--secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .action-btn-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-edit-item {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--primary-dark);
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-edit-item:hover { background-color: var(--primary-dark); }
+        .btn-edit-item.active { background-color: var(--primary-light); color: var(--primary-dark); border-color: #ffb3d1; }
+
+        .btn-delete-item {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--primary-dark);
+            width: 29px;
+            height: 29px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-delete-item:hover { background-color: var(--primary-dark); }
+
+        .table-qty-input, .modal-price-input {
+            width: 85px !important;
+            padding: 5px 8px !important;
+            font-weight: 600;
+            font-size: 14px !important;
+            border: 1.5px solid var(--primary) !important;
+            border-radius: 4px !important;
+            background-color: #fff !important;
+        }
+
+        .table-qty-input {
+            width: 70px !important;
+            text-align: center;
+        }
+
+        /* Summary Section */
+        .summary-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff0f5 100%);
+            border: 1.5px solid #ffd0e0;
+            border-left: 6px solid var(--primary);
+            padding: 20px 24px;
+            border-radius: 8px;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14.5px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .summary-row.total-row {
+            font-weight: 800;
+            color: var(--primary-dark);
+            font-size: 18px;
+            border-top: 2px dashed #ffb3d1;
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+
+        .payment-badges-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .payment-badge {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .payment-badge.advance { background-color: #ecfdf5; border: 1.5px solid #a7f3d0; color: #065f46; }
+        .payment-badge.due { background-color: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; }
+
+        .badge-title { font-size: 10.5px; font-weight: 700; text-transform: uppercase; }
+        .badge-amount { font-size: 17px; font-weight: 800; }
+
+        /* Terms & Conditions Box */
+        .terms-box {
+            padding: 16px 20px;
+            background-color: #f9fafb;
+            border-left: 4px solid var(--secondary);
+            border-radius: 0 6px 6px 0;
+            font-size: 12.5px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .terms-box h4 { color: var(--secondary); margin-bottom: 6px; font-size: 13.5px; font-weight: 700; }
+        .terms-box ul { padding-left: 18px; }
+
+        .actions { display: flex; justify-content: flex-end; }
+
+        .btn-print {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.2);
+        }
+
+        .btn-print:hover { background-color: #1a252f; transform: translateY(-1px); }
+
+        /* Modal Overlays & Design */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #fff;
+            width: 600px;
+            max-width: 90%;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalPop 0.3s ease-in-out;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-box h3 {
+            color: var(--secondary);
+            font-size: 20px;
+            font-weight: 800;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        /* Beautiful Login Modal Specific Design */
+        .login-modal-box {
+            background: #fff;
+            width: 400px;
+            max-width: 90%;
+            border-radius: 16px;
+            padding: 35px 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 18px;
+            animation: modalPop 0.3s ease-in-out;
+        }
+
+        .login-icon-circle {
+            width: 65px;
+            height: 65px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--primary);
+            box-shadow: 0 0 0 8px rgba(255, 0, 106, 0.05);
+        }
+
+        .login-title-area h3 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+
+        .login-title-area p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .login-input-group {
+            width: 100%;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .login-input-group label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+
+        .login-input-group select,
+        .login-input-group input {
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 14.5px;
+            outline: none;
+            width: 100%;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .login-input-group select:focus,
+        .login-input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 0, 106, 0.12);
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            padding-right: 42px;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password-btn:hover {
+            color: var(--secondary);
+        }
+
+        .login-btn-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-login-submit {
+            flex: 1;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 0, 106, 0.25);
+        }
+
+        .btn-login-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-login-cancel {
+            flex: 1;
+            background-color: #e5e7eb;
+            color: var(--secondary);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-login-cancel:hover {
+            background-color: #d1d5db;
+        }
+
+        .login-error-text {
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: -6px;
+            min-height: 18px;
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .modal-tab-btn {
+            background: #e5e7eb;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--secondary);
+            transition: all 0.2s;
+        }
+
+        .modal-tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 5px rgba(255, 0, 106, 0.2);
+        }
+
+        .manage-item-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .manage-item-form input {
+            flex: 2;
+        }
+
+        .manage-item-form input.price-input {
+            flex: 1;
+        }
+
+        .modal-item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .modal-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9fafb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 13.5px;
+        }
+
+        .modal-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .modal-action-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn-reorder {
+            background-color: var(--secondary);
+            color: #fff;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-reorder:hover { background-color: #1a252f; }
+
+        .btn-edit-modal {
+            background-color: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .btn-edit-modal:hover {
+            background-color: #1a252f;
+        }
+
+        .btn-close-modal {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            align-self: flex-end;
+            transition: background 0.2s;
+        }
+        .btn-close-modal:hover { background-color: #1a252f; }
+
+        /* ----------------------------------------------------------- */
+        /* FULL PAGE A4 PRINT DESIGN                                   */
+        /* ----------------------------------------------------------- */
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm;
+        }
+
+        @media print {
+            html, body { background-color: #ffffff; padding: 0; margin: 0; color: #000000; }
+            .container { box-shadow: none !important; border: none !important; padding: 0 !important; max-width: 100% !important; margin: 0 !important; display: block !important; }
+            .add-items-wrapper, .btn-print, .action-col, .no-print, .top-action-bar, .modal-overlay { display: none !important; }
+            input[type="date"] { display: none !important; }
+            .print-date-text { display: block !important; font-size: 15px !important; font-weight: 700 !important; color: #000 !important; padding-top: 3px; }
+            .print-only-text { display: inline !important; }
+
+            .form-section {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 14px 20px !important;
+                margin-bottom: 25px !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            label { font-size: 12px !important; color: #111 !important; font-weight: 800 !important; margin-bottom: 3px !important; }
+
+            input[type="text"], input[type="number"], select, textarea {
+                border: none !important; background: transparent !important; padding: 0 !important;
+                appearance: none !important; -webkit-appearance: none !important;
+                color: #000 !important; font-size: 15px !important; font-weight: 700 !important; width: 100% !important;
+            }
+
+            textarea { resize: none; height: auto !important; }
+
+            .header { margin-bottom: 22px; padding-bottom: 12px; border-bottom: 3px solid var(--primary) !important; }
+            .logo { width: 85px; height: 85px; }
+            .title-area h1 { font-size: 28px; }
+            .invoice-title h2 { font-size: 26px; color: var(--primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .invoice-number-display { font-size: 14px !important; color: #000 !important; font-weight: 800 !important; }
+
+            .items-table { margin-top: 15px; margin-bottom: 25px; }
+            .items-table th { background-color: #f3f4f6 !important; color: #000 !important; font-size: 13px !important; font-weight: 800 !important; padding: 10px 14px !important; border: 1.5px solid #9ca3af !important; }
+            .items-table td { padding: 10px 14px !important; font-size: 15px !important; font-weight: 600 !important; border: 1px solid #9ca3af !important; }
+
+            .summary-wrapper { margin-top: 15px; margin-bottom: 25px; justify-content: flex-end !important; page-break-inside: avoid; }
+            .summary-card { width: 400px !important; padding: 18px 22px !important; border: 1.5px solid #f472b6 !important; border-left: 6px solid var(--primary) !important; background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .summary-row { font-size: 15px !important; font-weight: 600 !important; }
+            .summary-row.total-row { font-size: 19px !important; font-weight: 800 !important; }
+
+            .payment-badge { padding: 10px 14px !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .badge-title { font-size: 11px !important; }
+            .badge-amount { font-size: 18px !important; font-weight: 800 !important; }
+
+            .terms-box { margin-top: 20px; padding: 14px 18px; font-size: 12px !important; border-left: 4px solid var(--secondary) !important; background-color: #f9fafb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; page-break-inside: avoid; }
+            .terms-box h4 { font-size: 14px !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Top Action Bar for Item Management -->
+    <div class="top-action-bar no-print">
+        <button class="btn-manage" onclick="openLoginModal()">⚙️ Manage Items & Charges</button>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-info">
+            <img src="https://i.ibb.co.com/ynS7wf1K/Vector.png" alt="ST Arts N Crafts Logo" class="logo">
+            <div class="title-area">
+                <h1>ST Arts N Crafts</h1>
+                <p>Crafting Memories | Founder: Tondra</p>
+            </div>
+        </div>
+        <div class="invoice-title">
+            <h2>INVOICE / MEMO</h2>
+            <div class="invoice-number-display">
+                Invoice #: <span id="generatedInvoiceNo">---</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer & Order Details Form -->
+    <div class="form-section">
+        <div class="input-group">
+            <label for="custName">Customer Name:</label>
+            <input type="text" id="custName" placeholder="Enter customer name" oninput="generateInvoiceNumber()">
+        </div>
+        <div class="input-group">
+            <label for="custPhone">Phone Number:</label>
+            <input type="text" id="custPhone" placeholder="Enter phone number" oninput="generateInvoiceNumber()">
+        </div>
+        <div class="input-group">
+            <label for="orderDate">Order Date:</label>
+            <input type="date" id="orderDate" onchange="updateFormattedDate('orderDate', 'orderDateFormatted'); generateInvoiceNumber();">
+            <span id="orderDateFormatted" class="print-date-text"></span>
+        </div>
+
+        <div class="input-group">
+            <label for="deliveryDate">Delivery Date:</label>
+            <input type="date" id="deliveryDate" onchange="updateFormattedDate('deliveryDate', 'deliveryDateFormatted')">
+            <span id="deliveryDateFormatted" class="print-date-text"></span>
+        </div>
+        <div class="input-group">
+            <label for="makingChargeSelect">Making Charge Tier:</label>
+            <select id="makingChargeSelect" onchange="calculateSummary()">
+                <option value="0">Select Making Charge</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="deliverySystem">Delivery System:</label>
+            <select id="deliverySystem" onchange="toggleAddressBox()">
+                <option value="OFFICE VISIT">OFFICE VISIT</option>
+                <option value="HOME DELIVERY">HOME DELIVERY</option>
+            </select>
+        </div>
+        <div class="input-group hidden" id="deliveryChargeGroup">
+            <label for="deliveryChargeSelect">Delivery Charge Tier:</label>
+            <select id="deliveryChargeSelect" onchange="calculateSummary()">
+                <option value="0">Select Delivery Tier</option>
+            </select>
+        </div>
+        <div class="input-group hidden" id="addressGroup" style="grid-column: span 2;">
+            <label for="deliveryAddress">Delivery Address:</label>
+            <textarea id="deliveryAddress" rows="1" placeholder="Enter full delivery address"></textarea>
+        </div>
+    </div>
+
+    <!-- Add Item Box (Screen Only) -->
+    <div class="add-items-wrapper no-print">
+        <h3>Add Item / Service to Memo</h3>
+        <div class="single-add-box">
+            <select id="singleItemSelect" onchange="onSingleSelectChange()">
+                <option value="">-- Select Item --</option>
+            </select>
+
+            <input type="text" id="customItemName" class="hidden" placeholder="Enter Item/Service Name">
+            <input type="number" id="singleQty" value="1" min="1" placeholder="Qty">
+            <input type="number" id="singlePrice" value="0" readonly placeholder="Price (TK)">
+            
+            <button class="btn-add-item" onclick="addItemToTable()">+ Add Item</button>
+        </div>
+    </div>
+
+    <!-- Printable Memo Table View -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item Description</th>
+                <th style="width: 140px;">Price (TK)</th>
+                <th style="width: 140px;">Quantity</th>
+                <th style="width: 130px;">Total (TK)</th>
+                <th class="action-col no-print" style="width: 90px; text-align: center;">Action</th>
+            </tr>
+        </thead>
+        <tbody id="memoItemsBody"></tbody>
+    </table>
+
+    <!-- Summary Wrapper -->
+    <div class="summary-wrapper">
+        <div class="summary-card">
+            <div class="summary-row">
+                <span>Items Subtotal:</span>
+                <span><span id="items_subtotal">0</span> TK</span>
+            </div>
+            <div class="summary-row">
+                <span>Making Charge:</span>
+                <span><span id="making_display">0</span> TK</span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery Charge:</span>
+                <span><span id="delivery_display">0</span> TK</span>
+            </div>
+            <div class="summary-row total-row">
+                <span>Grand Total:</span>
+                <span><span id="grand_total">0</span> TK</span>
+            </div>
+
+            <div class="payment-badges-container">
+                <div class="payment-badge advance">
+                    <span class="badge-title">Advance (50%)</span>
+                    <span class="badge-amount"><span id="advance_payment">0</span> TK</span>
+                </div>
+                <div class="payment-badge due">
+                    <span class="badge-title">Due on Delivery</span>
+                    <span class="badge-amount"><span id="due_payment">0</span> TK</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Box -->
+    <div class="terms-box">
+        <h4>Terms & Conditions:</h4>
+        <ul>
+            <li><strong>Payment Condition:</strong> Approximately 50% advance (rounded to nearest 100 TK) is required upon order placement. The remaining balance must be paid upon delivery.</li>
+            <li><strong>Customization:</strong> Handcrafted items may feature minor differences in texture or design shades.</li>
+            <li><strong>Cancellation:</strong> Deposits are non-refundable once production of the item has started.</li>
+        </ul>
+    </div>
+
+    <!-- Print Action Button -->
+    <div class="actions no-print">
+        <button class="btn-print" onclick="window.print()">Print / Save Memo</button>
+    </div>
+</div>
+
+<!-- Beautiful Login Modal -->
+<div id="loginModal" class="modal-overlay hidden no-print">
+    <div class="login-modal-box">
+        <div class="login-icon-circle">🔐</div>
+        <div class="login-title-area">
+            <h3>Admin Authentication</h3>
+            <p>Select User ID and enter password to continue</p>
+        </div>
+        
+        <div class="login-input-group">
+            <label for="adminUserSelect">User ID</label>
+            <select id="adminUserSelect">
+                <option value="Adm@2026">Adm@2026 (Full Access)</option>
+                <option value="Modrt@2026">Modrt@2026 (Inventory Only)</option>
+            </select>
+        </div>
+
+        <div class="login-input-group">
+            <label for="adminPasswordInput">Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="adminPasswordInput" placeholder="Enter password" onkeydown="if(event.key === 'Enter') verifyPassword()">
+                <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()">👁️</button>
+            </div>
+        </div>
+
+        <div id="loginErrorMsg" class="login-error-text"></div>
+
+        <div class="login-btn-group">
+            <button class="btn-login-cancel" onclick="closeLoginModal()">Cancel</button>
+            <button class="btn-login-submit" onclick="verifyPassword()">Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Items Modal -->
+<div id="manageModal" class="modal-overlay hidden no-print">
+    <div class="modal-box">
+        <h3 id="manageModalTitle">Manage Panel</h3>
+        <div class="modal-tabs" id="manageModalTabs">
+            <button class="modal-tab-btn active" id="tabBtnInventory" onclick="switchModalTab('inventory')">Inventory Items</button>
+            <button class="modal-tab-btn" id="tabBtnMaking" onclick="switchModalTab('making')">Making Charges</button>
+            <button class="modal-tab-btn" id="tabBtnDelivery" onclick="switchModalTab('delivery')">Delivery Charges</button>
+        </div>
+
+        <!-- Inventory Tab Content -->
+        <div id="contentInventory">
+            <div class="manage-item-form" style="margin-bottom: 12px;">
+                <input type="text" id="newManageName" placeholder="New Item Name">
+                <input type="number" id="newManagePrice" class="price-input" placeholder="Price (TK)">
+                <button class="btn-add-item" onclick="addNewInventoryItem()">Add Item</button>
+            </div>
+            <div class="modal-item-list" id="modalItemList"></div>
+        </div>
+
+        <!-- Making Charges Tab Content -->
+        <div id="contentMaking" class="hidden">
+            <div class="manage-item-form" style="margin-bottom: 12px;">
+                <input type="text" id="newMakingName" placeholder="Tier Name (e.g., MAKING CHARGE XXL)">
+                <input type="number" id="newMakingPrice" class="price-input" placeholder="Price (TK)">
+                <button class="btn-add-item" onclick="addNewMakingItem()">Add Tier</button>
+            </div>
+            <div class="modal-item-list" id="modalMakingList"></div>
+        </div>
+
+        <!-- Delivery Charges Tab Content -->
+        <div id="contentDelivery" class="hidden">
+            <div class="manage-item-form" style="margin-bottom: 12px;">
+                <input type="text" id="newDeliveryName" placeholder="Tier Name (e.g., DELIVERY CHARGE - XD)">
+                <input type="number" id="newDeliveryPrice" class="price-input" placeholder="Price (TK)">
+                <button class="btn-add-item" onclick="addNewDeliveryItem()">Add Tier</button>
+            </div>
+            <div class="modal-item-list" id="modalDeliveryList"></div>
+        </div>
+
+        <button class="btn-close-modal" onclick="closeManageModal()">Done</button>
+    </div>
+</div>
+
+<script>
+    // Credentials definition
+    const USERS = {
+        "Adm@2026": { pass: "SM@890174", role: "admin" },
+        "Modrt@2026": { pass: "TDT@799", role: "moderator" }
+    };
+
+    let currentLoggedInRole = null;
+
+    // Default Inventory List
+    const defaultInventory = [
+        { name: "CHINA RAPING PAPER", price: 50 },
+        { name: "RIBBON TIE", price: 25 },
+        { name: "BAMBO STICK", price: 3 },
+        { name: "RIBBON 1.0 INCH", price: 140 },
+        { name: "RIBBON 1.5 INCH", price: 190 },
+        { name: "RIBBON 2.0 INCH", price: 240 }
+    ];
+
+    // Default Making Charges
+    const defaultMakingCharges = [
+        { name: "MAKING CHARGE S", price: 290 },
+        { name: "MAKING CHARGE M", price: 590 },
+        { name: "MAKING CHARGE L", price: 1090 },
+        { name: "MAKING CHARGE XL", price: 2090 }
+    ];
+
+    // Default Delivery Charges
+    const defaultDeliveryCharges = [
+        { name: "DELIVERY CHARGE - SD", price: 120 },
+        { name: "DELIVERY CHARGE - MD", price: 160 },
+        { name: "DELIVERY CHARGE - LD", price: 210 }
+    ];
+
+    let addedItemsList = [];
+
+    // LocalStorage Getters/Setters
+    function getInventory() {
+        const stored = localStorage.getItem('st_arts_inventory');
+        return stored ? JSON.parse(stored) : defaultInventory;
+    }
+    function saveInventory(data) { localStorage.setItem('st_arts_inventory', JSON.stringify(data)); }
+
+    function getMakingCharges() {
+        const stored = localStorage.getItem('st_arts_making');
+        return stored ? JSON.parse(stored) : defaultMakingCharges;
+    }
+    function saveMakingCharges(data) { localStorage.setItem('st_arts_making', JSON.stringify(data)); }
+
+    function getDeliveryCharges() {
+        const stored = localStorage.getItem('st_arts_delivery');
+        return stored ? JSON.parse(stored) : defaultDeliveryCharges;
+    }
+    function saveDeliveryCharges(data) { localStorage.setItem('st_arts_delivery', JSON.stringify(data)); }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('orderDate').value = todayStr;
+        updateFormattedDate('orderDate', 'orderDateFormatted');
+        generateInvoiceNumber();
+        populateAllDropdowns();
+    });
+
+    function populateAllDropdowns() {
+        populateItemDropdown();
+        populateMakingDropdown();
+        populateDeliveryDropdown();
+    }
+
+    function populateItemDropdown() {
+        const select = document.getElementById('singleItemSelect');
+        const inventory = getInventory();
+        select.innerHTML = '<option value="">-- Select Item --</option>';
+        inventory.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.name;
+            opt.setAttribute('data-price', item.price);
+            opt.textContent = `${item.name} (${item.price} TK)`;
+            select.appendChild(opt);
+        });
+        const otherOpt = document.createElement('option');
+        otherOpt.value = "OTHERS";
+        otherOpt.setAttribute('data-price', "custom");
+        otherOpt.textContent = "OTHERS (Manual Entry)";
+        select.appendChild(otherOpt);
+    }
+
+    function populateMakingDropdown() {
+        const select = document.getElementById('makingChargeSelect');
+        const currentVal = select.value;
+        const makingList = getMakingCharges();
+        select.innerHTML = '<option value="0">Select Making Charge</option>';
+        makingList.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.price;
+            opt.textContent = `${item.name} (${item.price} TK)`;
+            select.appendChild(opt);
+        });
+        select.value = currentVal;
+    }
+
+    function populateDeliveryDropdown() {
+        const select = document.getElementById('deliveryChargeSelect');
+        const currentVal = select.value;
+        const deliveryList = getDeliveryCharges();
+        select.innerHTML = '<option value="0">Select Delivery Tier</option>';
+        deliveryList.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.price;
+            opt.textContent = `${item.name} (${item.price} TK)`;
+            select.appendChild(opt);
+        });
+        select.value = currentVal;
+    }
+
+    // --- Login Modal Handlers ---
+    function openLoginModal() {
+        document.getElementById('adminUserSelect').selectedIndex = 0;
+        document.getElementById('adminPasswordInput').value = '';
+        document.getElementById('loginErrorMsg').innerText = '';
+        document.getElementById('adminPasswordInput').type = 'password';
+        document.getElementById('loginModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('adminPasswordInput').focus();
+        }, 100);
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    function togglePasswordVisibility() {
+        const passInput = document.getElementById('adminPasswordInput');
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+        } else {
+            passInput.type = 'password';
+        }
+    }
+
+    function verifyPassword() {
+        const selectedUser = document.getElementById('adminUserSelect').value;
+        const pass = document.getElementById('adminPasswordInput').value;
+        const errorMsg = document.getElementById('loginErrorMsg');
+
+        if (USERS[selectedUser] && USERS[selectedUser].pass === pass) {
+            currentLoggedInRole = USERS[selectedUser].role;
+            closeLoginModal();
+            openManageModal();
+        } else {
+            errorMsg.innerText = "Incorrect User ID or Password!";
+            document.getElementById('adminPasswordInput').style.borderColor = "var(--danger)";
+            setTimeout(() => {
+                document.getElementById('adminPasswordInput').style.borderColor = "var(--border)";
+            }, 1500);
+        }
+    }
+
+    function openManageModal() {
+        const tabsContainer = document.getElementById('manageModalTabs');
+        
+        if (currentLoggedInRole === 'moderator') {
+            // Moderator can only view inventory tab
+            tabsContainer.style.display = 'none';
+            switchModalTab('inventory');
+        } else {
+            // Admin can view all tabs
+            tabsContainer.style.display = 'flex';
+            switchModalTab('inventory');
+        }
+        document.getElementById('manageModal').classList.remove('hidden');
+    }
+
+    function closeManageModal() {
+        document.getElementById('manageModal').classList.add('hidden');
+        populateAllDropdowns();
+        calculateSummary();
+    }
+
+    function switchModalTab(tab) {
+        // If moderator tries to access other tabs, restrict them
+        if (currentLoggedInRole === 'moderator' && tab !== 'inventory') {
+            return;
+        }
+
+        document.getElementById('contentInventory').classList.add('hidden');
+        document.getElementById('contentMaking').classList.add('hidden');
+        document.getElementById('contentDelivery').classList.add('hidden');
+        
+        document.getElementById('tabBtnInventory').classList.remove('active');
+        document.getElementById('tabBtnMaking').classList.remove('active');
+        document.getElementById('tabBtnDelivery').classList.remove('active');
+
+        if (tab === 'inventory') {
+            document.getElementById('contentInventory').classList.remove('hidden');
+            document.getElementById('tabBtnInventory').classList.add('active');
+            renderModalItemList();
+        } else if (tab === 'making' && currentLoggedInRole === 'admin') {
+            document.getElementById('contentMaking').classList.remove('hidden');
+            document.getElementById('tabBtnMaking').classList.add('active');
+            renderModalMakingList();
+        } else if (tab === 'delivery' && currentLoggedInRole === 'admin') {
+            document.getElementById('contentDelivery').classList.remove('hidden');
+            document.getElementById('tabBtnDelivery').classList.add('active');
+            renderModalDeliveryList();
+        }
+    }
+
+    // --- Inventory Management ---
+    function renderModalItemList() {
+        const listDiv = document.getElementById('modalItemList');
+        const inventory = getInventory();
+        listDiv.innerHTML = '';
+        inventory.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'modal-item-row';
+            let priceHTML = item.isEditing ? `<input type="number" class="modal-price-input" value="${item.price}" onchange="updateInvPrice(${index}, this.value)"> TK` : `<strong>${item.price} TK</strong>`;
+            row.innerHTML = `
+                <div class="modal-item-info">
+                    <button class="btn-reorder" onclick="moveItem('inv', ${index}, -1)" ${index === 0 ? 'style="opacity:0.4; cursor:not-allowed;"' : ''}>▲</button>
+                    <button class="btn-reorder" onclick="moveItem('inv', ${index}, 1)" ${index === inventory.length - 1 ? 'style="opacity:0.4; cursor:not-allowed;"' : ''}>▼</button>
+                    <span style="flex: 2; font-weight: 600;">${item.name}</span>
+                    <span>${priceHTML}</span>
+                </div>
+                <div class="modal-action-group">
+                    <button class="btn-edit-modal" onclick="toggleEditInv(${index})">${item.isEditing ? 'Save' : 'Edit'}</button>
+                    <button class="btn-delete-item" onclick="deleteInvItem(${index})">✕</button>
+                </div>
+            `;
+            listDiv.appendChild(row);
+        });
+    }
+
+    function addNewInventoryItem() {
+        const name = document.getElementById('newManageName').value.trim().toUpperCase();
+        const price = parseFloat(document.getElementById('newManagePrice').value);
+        if (!name || isNaN(price)) { alert("Enter valid name and price!"); return; }
+        let inventory = getInventory();
+        inventory.push({ name, price, isEditing: false });
+        saveInventory(inventory);
+        document.getElementById('newManageName').value = '';
+        document.getElementById('newManagePrice').value = '';
+        renderModalItemList();
+    }
+    function toggleEditInv(i) { let inv = getInventory(); inv[i].isEditing = !inv[i].isEditing; saveInventory(inv); renderModalItemList(); }
+    function updateInvPrice(i, val) { let inv = getInventory(); inv[i].price = parseFloat(val) || 0; saveInventory(inv); }
+    function deleteInvItem(i) { let inv = getInventory(); inv.splice(i, 1); saveInventory(inv); renderModalItemList(); }
+
+    // --- Making Charge Management (Admin Only) ---
+    function renderModalMakingList() {
+        if (currentLoggedInRole !== 'admin') return;
+        const listDiv = document.getElementById('modalMakingList');
+        const list = getMakingCharges();
+        listDiv.innerHTML = '';
+        list.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'modal-item-row';
+            let priceHTML = item.isEditing ? `<input type="number" class="modal-price-input" value="${item.price}" onchange="updateMakPrice(${index}, this.value)"> TK` : `<strong>${item.price} TK</strong>`;
+            row.innerHTML = `
+                <div class="modal-item-info">
+                    <button class="btn-reorder" onclick="moveItem('mak', ${index}, -1)" ${index === 0 ? 'style="opacity:0.4; cursor:not-allowed;"' : ''}>▲</button>
+                    <button class="btn-reorder" onclick="moveItem('mak', ${index}, 1)" ${index === list.length - 1 ? 'style="opacity:0.4; cursor:not-allowed;"' : ''}>▼</button>
+                    <span style="flex: 2; font-weight: 600;">${item.name}</span>
+                    <span>${priceHTML}</span>
+                </div>
+                <div class="modal-action-group">
+                    <button class="btn-edit-modal" onclick="toggleEditMak(${index})">${item.isEditing ? 'Save' : 'Edit'}</button>
+                    <button class="btn-delete-item" onclick="deleteMakItem(${index})">✕</button>
+                </div>
+            `;
+            listDiv.appendChild(row);
+        });
+    }
+
+    function addNewMakingItem() {
+        if (currentLoggedInRole !== 'admin') return;
+        const name = document.getElementById('newMakingName').value.trim().toUpperCase();
+        const price = parseFloat(document.getElementById('newMakingPrice').value);
+        if (!name || isNaN(price)) { alert("Enter valid name and price!"); return; }
+        let list = getMakingCharges();
+        list.push({ name, price, isEditing: false });
+        saveMakingCharges(list);
+        document.getElementById('newMakingName').value = '';
+        document.getElementById('newMakingPrice').value = '';
+        renderModalMakingList();
+    }
+    function toggleEditMak(i) { let list = getMakingCharges(); list[i].isEditing = !list[i].isEditing; saveMakingCharges(list); renderModalMakingList(); }
+    function updateMakPrice(i, val) { let list = getMakingCharges(); list[i].price = parseFloat(val) || 0; saveMakingCharges(list); }
+    function deleteMakItem(i) { let list = getMakingCharges(); list.splice(i, 1); saveMakingCharges(list); renderModalMakingList(); }
+
+    // --- Delivery Charge Management (Admin Only) ---
+    function renderModalDeliveryList() {
+        if (currentLoggedInRole !== 'admin') return;
+        const listDiv = document.getElementById('modalDeliveryList');
+        const list = getDeliveryCharges();
+        listDiv.innerHTML = '';
+        list.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'modal-item-row';
+            let priceHTML = item.isEditing ? `<input type="number" class="modal-price-input" value="${item.price}" onchange="updateDelPrice(${index}, this.value)"> TK` : `<strong>${item.price} TK</strong>`;
+            row.innerHTML = `
+                <div class="modal-item-info">
+                    <button class="btn-reorder" onclick="moveItem('del', ${index}, -1)" ${index === 0 ? 'style="opacity:0.4; cursor:not-allowed;"' : ''}>▲</button>
+                    <button class="btn-reorder" onclick="moveItem('del', ${index}, 1)" ${index === list.length - 1 ? 'style="opacity:0.4; cursor:not-allowed;"' : ''}>▼</button>
+                    <span style="flex: 2; font-weight: 600;">${item.name}</span>
+                    <span>${priceHTML}</span>
+                </div>
+                <div class="modal-action-group">
+                    <button class="btn-edit-modal" onclick="toggleEditDel(${index})">${item.isEditing ? 'Save' : 'Edit'}</button>
+                    <button class="btn-delete-item" onclick="deleteDelItem(${index})">✕</button>
+                </div>
+            `;
+            listDiv.appendChild(row);
+        });
+    }
+
+    function addNewDeliveryItem() {
+        if (currentLoggedInRole !== 'admin') return;
+        const name = document.getElementById('newDeliveryName').value.trim().toUpperCase();
+        const price = parseFloat(document.getElementById('newDeliveryPrice').value);
+        if (!name || isNaN(price)) { alert("Enter valid name and price!"); return; }
+        let list = getDeliveryCharges();
+        list.push({ name, price, isEditing: false });
+        saveDeliveryCharges(list);
+        document.getElementById('newDeliveryName').value = '';
+        document.getElementById('newDeliveryPrice').value = '';
+        renderModalDeliveryList();
+    }
+    function toggleEditDel(i) { let list = getDeliveryCharges(); list[i].isEditing = !list[i].isEditing; saveDeliveryCharges(list); renderModalDeliveryList(); }
+    function updateDelPrice(i, val) { let list = getDeliveryCharges(); list[i].price = parseFloat(val) || 0; saveDeliveryCharges(list); }
+    function deleteDelItem(i) { let list = getDeliveryCharges(); list.splice(i, 1); saveDeliveryCharges(list); renderModalDeliveryList(); }
+
+    // --- Universal Reorder Helper ---
+    function moveItem(type, index, direction) {
+        let list, saveFunc, renderFunc;
+        if (type === 'inv') { list = getInventory(); saveFunc = saveInventory; renderFunc = renderModalItemList; }
+        else if (type === 'mak') { 
+            if (currentLoggedInRole !== 'admin') return;
+            list = getMakingCharges(); saveFunc = saveMakingCharges; renderFunc = renderModalMakingList; 
+        }
+        else if (type === 'del') { 
+            if (currentLoggedInRole !== 'admin') return;
+            list = getDeliveryCharges(); saveFunc = saveDeliveryCharges; renderFunc = renderModalDeliveryList; 
+        }
+
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= list.length) return;
+        const temp = list[index];
+        list[index] = list[newIndex];
+        list[newIndex] = temp;
+        saveFunc(list);
+        renderFunc();
+    }
+
+    // --- Invoice Standard Logic ---
+    function updateFormattedDate(inputId, targetSpanId) {
+        const val = document.getElementById(inputId).value;
+        const target = document.getElementById(targetSpanId);
+        if (!val) { target.innerText = ""; return; }
+        const dateObj = new Date(val);
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = dateObj.toLocaleString('en-GB', { month: 'long' });
+        const year = dateObj.getFullYear();
+        target.innerText = `${day} ${month} ${year}`;
+    }
+
+    function generateInvoiceNumber() {
+        const nameVal = document.getElementById('custName').value.trim();
+        const phoneVal = document.getElementById('custPhone').value.trim();
+        const dateVal = document.getElementById('orderDate').value;
+        let datePart = "";
+        if (dateVal) {
+            const dateObj = new Date(dateVal);
+            datePart = `${dateObj.getDate()}${dateObj.getMonth() + 1}${String(dateObj.getFullYear()).slice(-2)}`;
+        }
+        let phonePart = "";
+        const cleanPhone = phoneVal.replace(/\D/g, ''); 
+        phonePart = cleanPhone.length >= 3 ? cleanPhone.slice(-3) : cleanPhone;
+        let namePart = nameVal.length > 0 ? nameVal.charAt(0).toUpperCase() : "";
+        document.getElementById('generatedInvoiceNo').innerText = `${datePart}${phonePart}${namePart}` || "---";
+    }
+
+    function toggleAddressBox() {
+        const sys = document.getElementById('deliverySystem').value;
+        const addressGroup = document.getElementById('addressGroup');
+        const deliveryChargeGroup = document.getElementById('deliveryChargeGroup');
+        if (sys === 'HOME DELIVERY') {
+            addressGroup.classList.remove('hidden');
+            deliveryChargeGroup.classList.remove('hidden');
+        } else {
+            addressGroup.classList.add('hidden');
+            deliveryChargeGroup.classList.add('hidden');
+            document.getElementById('deliveryChargeSelect').value = "0";
+        }
+        calculateSummary();
+    }
+
+    function onSingleSelectChange() {
+        const select = document.getElementById('singleItemSelect');
+        const priceInput = document.getElementById('singlePrice');
+        const customNameInput = document.getElementById('customItemName');
+        const selectedOption = select.options[select.selectedIndex];
+        if (!selectedOption.value) {
+            priceInput.value = 0;
+            priceInput.readOnly = true;
+            customNameInput.classList.add('hidden');
+        } else {
+            const price = selectedOption.getAttribute('data-price');
+            if (price === 'custom') {
+                customNameInput.classList.remove('hidden');
+                customNameInput.focus();
+                priceInput.value = '';
+                priceInput.readOnly = false;
+            } else {
+                customNameInput.classList.add('hidden');
+                priceInput.value = price;
+                priceInput.readOnly = true;
+            }
+        }
+    }
+
+    function addItemToTable() {
+        const select = document.getElementById('singleItemSelect');
+        const customNameInput = document.getElementById('customItemName');
+        const qtyInput = document.getElementById('singleQty');
+        const priceInput = document.getElementById('singlePrice');
+
+        let itemName = select.value;
+        const qty = parseInt(qtyInput.value) || 0;
+        const price = parseFloat(priceInput.value) || 0;
+
+        if (!itemName) { alert("Please select an item first!"); return; }
+        if (itemName === 'OTHERS') {
+            itemName = customNameInput.value.trim();
+            if (!itemName) { alert("Please enter custom item name!"); customNameInput.focus(); return; }
+        }
+        if (qty <= 0) { alert("Quantity must be greater than 0!"); return; }
+
+        addedItemsList.push({
+            id: Date.now(),
+            name: itemName,
+            price: price,
+            qty: qty,
+            total: qty * price,
+            isCustom: (select.value === 'OTHERS'),
+            isEditing: false
+        });
+
+        select.value = "";
+        customNameInput.value = "";
+        customNameInput.classList.add('hidden');
+        qtyInput.value = 1;
+        priceInput.value = 0;
+        priceInput.readOnly = true;
+        renderMemoTable();
+    }
+
+    function toggleEditItem(id) {
+        const item = addedItemsList.find(i => i.id === id);
+        if (item) { item.isEditing = !item.isEditing; renderMemoTable(); }
+    }
+
+    function updateItemQtyDirect(id, val) {
+        const item = addedItemsList.find(i => i.id === id);
+        if (item) {
+            const parsed = parseInt(val);
+            if (!isNaN(parsed) && parsed > 0) {
+                item.qty = parsed;
+                item.total = item.qty * item.price;
+                renderMemoTable();
+            }
+        }
+    }
+
+    function updateItemPrice(id, val) {
+        const item = addedItemsList.find(i => i.id === id);
+        if (item) {
+            const parsed = parseFloat(val);
+            item.price = isNaN(parsed) ? 0 : parsed;
+            item.total = item.qty * item.price;
+            renderMemoTable();
+        }
+    }
+
+    function removeItem(id) {
+        addedItemsList = addedItemsList.filter(item => item.id !== id);
+        renderMemoTable();
+    }
+
+    function renderMemoTable() {
+        const tbody = document.getElementById('memoItemsBody');
+        tbody.innerHTML = '';
+        addedItemsList.forEach(item => {
+            const tr = document.createElement('tr');
+            let priceCellHTML = (item.isCustom && item.isEditing) ? `<div class="no-print"><input type="number" class="table-price-input" value="${item.price}" onchange="updateItemPrice(${item.id}, this.value)"> TK</div><span class="print-date-text print-only-text">${item.price} TK</span>` : `${item.price} TK`;
+            let qtyCellHTML = item.isEditing ? `<div class="no-print"><input type="number" class="table-qty-input" value="${item.qty}" min="1" onchange="updateItemQtyDirect(${item.id}, this.value)"></div><span class="print-date-text print-only-text">${item.qty}</span>` : `${item.qty}`;
+            
+            tr.innerHTML = `
+                <td>${item.name}</td>
+                <td>${priceCellHTML}</td>
+                <td>${qtyCellHTML}</td>
+                <td>${item.total} TK</td>
+                <td class="action-col no-print" style="text-align: center;">
+                    <div class="action-btn-group">
+                        <button class="btn-edit-item ${item.isEditing ? 'active' : ''}" title="Edit" onclick="toggleEditItem(${item.id})">✏️</button>
+                        <button class="btn-delete-item" title="Delete" onclick="removeItem(${item.id})">✕</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        calculateSummary();
+    }
+
+    function calculateSummary() {
+        let itemsSubtotal = 0;
+        addedItemsList.forEach(item => { itemsSubtotal += item.total; });
+        const makingCharge = parseInt(document.getElementById('makingChargeSelect').value) || 0;
+        const deliveryCharge = parseInt(document.getElementById('deliveryChargeSelect').value) || 0;
+        const grandTotal = itemsSubtotal + makingCharge + deliveryCharge;
+        const roundedAdvance = Math.round((grandTotal * 0.50) / 100) * 100;
+        const duePayment = grandTotal - roundedAdvance;
+
+        document.getElementById('items_subtotal').innerText = itemsSubtotal;
+        document.getElementById('making_display').innerText = makingCharge;
+        document.getElementById('delivery_display').innerText = deliveryCharge;
+        document.getElementById('grand_total').innerText = grandTotal;
+        document.getElementById('advance_payment').innerText = roundedAdvance;
+        document.getElementById('due_payment').innerText = duePayment;
+    }
+</script>
+
+</body>
+</html>
